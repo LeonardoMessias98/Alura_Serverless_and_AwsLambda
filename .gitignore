@@ -1,1 +1,4 @@
 node_modules
+jspm_packages
+aws
+.serverless

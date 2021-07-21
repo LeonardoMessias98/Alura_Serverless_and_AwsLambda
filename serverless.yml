@@ -1,5 +1,5 @@
 service: cadastro-pacientes
-frameworkVersion: '2'
+frameworkVersion: "2"
 
 plugins:
   - serverless-offline
@@ -11,7 +11,14 @@ provider:
 
   stage: dev
   region: us-east-2
-
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:PutItem
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:us-east-2:850127579042:table/PACIENTES
 
 functions:
   listarPacientes:
@@ -27,3 +34,19 @@ functions:
       - http:
           path: pacientes/{pacienteId}
           method: get
+
+resources:
+  Resources:
+    PacientesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: PACIENTES
+        AttributeDefinitions:
+          - AttributeName: paciente_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: paciente_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

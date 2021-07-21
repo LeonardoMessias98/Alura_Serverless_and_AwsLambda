@@ -1,39 +1,52 @@
-'use strict';
+"use strict";
+const AWS = require("aws-sdk");
 
-const pacientes = [
-  { id: 1, nome: "Maria", dataNasc: '1984-01-11' },
-  { id: 2, nome: "João", dataNasc: '1983-09-16' },
-  { id: 3, nome: "José", dataNasc: '1959-07-15' },
-]
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const params = {
+  TableName: "PACIENTES",
+};
 
 module.exports.listarPacientes = async (event) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
-        pacientes
-      },
-      null,
-      2
-    ),
-  };
+  try {
+    let data = await dynamoDb.scan(params).promise();
 
+    return {
+      statusCode: 200,
+      body: JSON.stringify(data),
+    };
+  } catch (error) {
+    console.log(error, "error");
+
+    return {
+      statusCode: error.statusCode || 500,
+      body: JSON.stringify({
+        error: error.name || "Exception",
+        message: error.message || "Unknow error",
+      }),
+    };
+  }
 };
 
 module.exports.obterPaciente = async (event) => {
   const { pacienteId } = event.pathParameters;
 
-  const paciente = pacientes.find((paciente) => paciente.id == pacienteId)
+  const paciente = pacientes.find((paciente) => paciente.id == pacienteId);
+
+  if (paciente === undefined) {
+    return {
+      statusCode: 404,
+      body: JSON.stringify({ error: "Paciente not found" }),
+    };
+  }
 
   return {
     statusCode: 200,
     body: JSON.stringify(
       {
-        paciente
+        paciente,
       },
       null,
       2
     ),
   };
-
 };
