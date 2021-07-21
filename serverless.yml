@@ -16,7 +16,9 @@ provider:
       Action:
         - dynamodb:Query
         - dynamodb:Scan
+        - dynamodb:GetItem
         - dynamodb:PutItem
+        - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: arn:aws:dynamodb:us-east-2:850127579042:table/PACIENTES
 
@@ -34,6 +36,27 @@ functions:
       - http:
           path: pacientes/{pacienteId}
           method: get
+
+  cadastrarPaciente:
+    handler: handler.cadastrarPaciente
+    events:
+      - http:
+          path: pacientes
+          method: post
+
+  atualizarPaciente:
+    handler: handler.atualizarPaciente
+    events:
+      - http:
+          path: pacientes/{pacienteId}
+          method: put
+
+  excluirPaciente:
+    handler: handler.excluirPaciente
+    events:
+      - http:
+          path: pacientes/{pacienteId}
+          method: delete
 
 resources:
   Resources:
