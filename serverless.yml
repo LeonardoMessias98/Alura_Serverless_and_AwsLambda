@@ -2,7 +2,26 @@ service: cadastro-pacientes
 frameworkVersion: "2"
 
 plugins:
+  - serverless-dynamodb-local
   - serverless-offline
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 3080
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+    seed:
+      domain:
+        sources:
+          - table: PACIENTES
+            sources: [./offline/migrations/pacientes-seed.json]
 
 provider:
   name: aws

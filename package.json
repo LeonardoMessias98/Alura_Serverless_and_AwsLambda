@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "test": "mocha",
+    "fixtures": "./bin/fixtures"
+  },
   "devDependencies": {
+    "faker": "^5.5.3",
+    "serverless-dynamodb-local": "0.2.37",
     "serverless-offline": "^7.0.0"
   },
   "dependencies": {
